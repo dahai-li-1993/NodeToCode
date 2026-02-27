@@ -377,89 +377,58 @@ public:
     virtual FText GetSectionText() const override;
     // End UDeveloperSettings Interface
 
-    /** Selected LLM provider */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Provider")
-    EN2CLLMProvider Provider = EN2CLLMProvider::Anthropic;
+    /** Fixed LLM provider */
+    UPROPERTY(Config, VisibleAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Provider",
+        meta = (DisplayName = "Provider (Fixed)"))
+    EN2CLLMProvider Provider = EN2CLLMProvider::OpenAI;
 
     /** Reference to user secrets containing API keys */
     UPROPERTY(Transient)
     mutable UN2CUserSecrets* UserSecrets;
 
-    /** Anthropic Model Selection - Sonnet 4 recommended*/
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Anthropic")
-    EN2CAnthropicModel AnthropicModel = EN2CAnthropicModel::Claude4_Sonnet;
-    
-    /** Anthropic API Key - Stored separately in user secrets */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code | LLM Services | Anthropic",
-        meta = (DisplayName = "API Key"))
-    FString Anthropic_API_Key_UI;
-
-    /** OpenAI Model Selection - o3-mini recommended for impressive results for a great price, o1 recommended for most thorough results (but quite expensive) */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | OpenAI")
-    EN2COpenAIModel OpenAI_Model = EN2COpenAIModel::GPT_o4_mini;
+    /** OpenAI model is fixed to GPT-5.3 Codex */
+    UPROPERTY(Config)
+    EN2COpenAIModel OpenAI_Model = EN2COpenAIModel::GPT_5_3_Codex;
 
     /** OpenAI API Key - Stored separately in user secrets */
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code | LLM Services | OpenAI",
         meta = (DisplayName = "API Key"))
     FString OpenAI_API_Key_UI;
 
-    /** Gemini Model Selection - 2.5 Flash recommended for best price-performance, 2.5 Pro for most capability */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Gemini")
-    EN2CGeminiModel Gemini_Model = EN2CGeminiModel::Gemini_2_5_Flash;
-
-    /** OpenAI API Key - Stored separately in user secrets */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code | LLM Services | Gemini",
-        meta = (DisplayName = "API Key"))
-    FString Gemini_API_Key_UI;
-
-    /** DeepSeek Model Selection - R1 recommended for most accurate results */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | DeepSeek")
+    /** DeepSeek model setting (unused when provider is fixed to OpenAI) */
+    UPROPERTY(Config)
     EN2CDeepSeekModel DeepSeekModel = EN2CDeepSeekModel::DeepSeek_R1;
     
     /** DeepSeek API Key - Stored separately in user secrets */
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Node to Code | LLM Services | DeepSeek",
-        meta = (DisplayName = "API Key"))
+    UPROPERTY()
     FString DeepSeek_API_Key_UI;
 
-    /** Ollama configuration */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Ollama")
+    /** Ollama configuration (unused when provider is fixed to OpenAI) */
+    UPROPERTY(Config)
     FN2COllamaConfig OllamaConfig;
     
-    /** Ollama Model Selection */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Ollama",
-        meta=(DisplayName="Model Name"))
+    /** Ollama model setting (unused when provider is fixed to OpenAI) */
+    UPROPERTY(Config)
     FString OllamaModel = "qwen3:32b";
     
-    /** LM Studio Model Selection */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | LM Studio",
-        meta=(DisplayName="Model Name"))
+    /** LM Studio model setting (unused when provider is fixed to OpenAI) */
+    UPROPERTY(Config)
     FString LMStudioModel = "qwen3-32b";
     
-    /** LM Studio Endpoint - Default is localhost:1234 */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | LM Studio",
-        meta=(DisplayName="Server Endpoint"))
+    /** LM Studio endpoint setting (unused when provider is fixed to OpenAI) */
+    UPROPERTY(Config)
     FString LMStudioEndpoint = "http://localhost:1234";
     
-    /** LM Studio Prepended Model Command - Text to prepend to user messages (e.g., '/no_think' to disable thinking for reasoning models, or other model-specific commands). This text will appear at the start of each user message. */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | LM Studio",
-        meta=(DisplayName="Prepended Model Command", 
-              ToolTip="Text to prepend to user messages (e.g., '/no_think' to disable thinking for reasoning models, or other model-specific commands). This text will appear on first line of each user message."))
+    /** LM Studio prepended command setting (unused when provider is fixed to OpenAI) */
+    UPROPERTY(Config)
     FString LMStudioPrependedModelCommand = "";
     
     /** OpenAI Model Pricing */
     UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Pricing | OpenAI", DisplayName = "OpenAI Model Pricing")
     TMap<EN2COpenAIModel, FN2COpenAIPricing> OpenAIModelPricing;
 
-    /** Anthropic Model Pricing */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Pricing | Anthropic")
-    TMap<EN2CAnthropicModel, FN2CAnthropicPricing> AnthropicModelPricing;
-
-    /** Gemini Model Pricing */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Pricing | Gemini")
-    TMap<EN2CGeminiModel, FN2CGeminiPricing> GeminiModelPricing;
-
-    /** DeepSeek Model Pricing */
-    UPROPERTY(Config, EditAnywhere, BlueprintReadOnly, Category = "Node to Code | LLM Services | Pricing | DeepSeek")
+    /** DeepSeek model pricing table (unused when provider is fixed to OpenAI) */
+    UPROPERTY(Config)
     TMap<EN2CDeepSeekModel, FN2CDeepSeekPricing> DeepSeekModelPricing;
     
     /** Target programming language for translation */
@@ -530,64 +499,22 @@ public:
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Node to Code | LLM Services | Pricing")
     float GetCurrentInputCost() const
     {
-        switch (Provider)
+        if (const FN2COpenAIPricing* Pricing = OpenAIModelPricing.Find(EN2COpenAIModel::GPT_5_3_Codex))
         {
-            case EN2CLLMProvider::OpenAI:
-                if (const FN2COpenAIPricing* Pricing = OpenAIModelPricing.Find(OpenAI_Model))
-                {
-                    return Pricing->InputCost;
-                }
-                return FN2CLLMModelUtils::GetOpenAIPricing(OpenAI_Model).InputCost;
-            case EN2CLLMProvider::Anthropic:
-                if (const FN2CAnthropicPricing* Pricing = AnthropicModelPricing.Find(AnthropicModel))
-                {
-                    return Pricing->InputCost;
-                }
-                return FN2CLLMModelUtils::GetAnthropicPricing(AnthropicModel).InputCost;
-            case EN2CLLMProvider::DeepSeek:
-                if (const FN2CDeepSeekPricing* Pricing = DeepSeekModelPricing.Find(DeepSeekModel))
-                {
-                    return Pricing->InputCost;
-                }
-                return FN2CLLMModelUtils::GetDeepSeekPricing(DeepSeekModel).InputCost;
-            case EN2CLLMProvider::Ollama:
-            case EN2CLLMProvider::LMStudio:
-                return 0.0f; // Local models are free
-            default:
-                return 0.0f;
+            return Pricing->InputCost;
         }
+        return FN2CLLMModelUtils::GetOpenAIPricing(EN2COpenAIModel::GPT_5_3_Codex).InputCost;
     }
 
     /** Get the current model's output cost */
     UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Node to Code | LLM Services | Pricing")
     float GetCurrentOutputCost() const
     {
-        switch (Provider)
+        if (const FN2COpenAIPricing* Pricing = OpenAIModelPricing.Find(EN2COpenAIModel::GPT_5_3_Codex))
         {
-            case EN2CLLMProvider::OpenAI:
-                if (const FN2COpenAIPricing* Pricing = OpenAIModelPricing.Find(OpenAI_Model))
-                {
-                    return Pricing->OutputCost;
-                }
-                return FN2CLLMModelUtils::GetOpenAIPricing(OpenAI_Model).OutputCost;
-            case EN2CLLMProvider::Anthropic:
-                if (const FN2CAnthropicPricing* Pricing = AnthropicModelPricing.Find(AnthropicModel))
-                {
-                    return Pricing->OutputCost;
-                }
-                return FN2CLLMModelUtils::GetAnthropicPricing(AnthropicModel).OutputCost;
-            case EN2CLLMProvider::DeepSeek:
-                if (const FN2CDeepSeekPricing* Pricing = DeepSeekModelPricing.Find(DeepSeekModel))
-                {
-                    return Pricing->OutputCost;
-                }
-                return FN2CLLMModelUtils::GetDeepSeekPricing(DeepSeekModel).OutputCost;
-            case EN2CLLMProvider::Ollama:
-            case EN2CLLMProvider::LMStudio:
-                return 0.0f; // Local models are free
-            default:
-                return 0.0f;
+            return Pricing->OutputCost;
         }
+        return FN2CLLMModelUtils::GetOpenAIPricing(EN2COpenAIModel::GPT_5_3_Codex).OutputCost;
     }
 
     /** Calculate and store token estimate for reference files */

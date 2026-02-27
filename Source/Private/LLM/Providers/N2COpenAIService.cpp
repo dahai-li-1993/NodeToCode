@@ -2,8 +2,16 @@
 
 #include "LLM/Providers/N2COpenAIService.h"
 
-#include "LLM/N2CLLMModels.h"
 #include "LLM/N2CSystemPromptManager.h"
+
+namespace
+{
+bool SupportsSystemPromptsForModel(const FString& ModelName)
+{
+    // Current OpenAI limitation in this integration: o1 family does not support system prompts.
+    return !ModelName.StartsWith(TEXT("o1"));
+}
+}
 
 UN2CResponseParserBase* UN2COpenAIService::CreateResponseParser()
 {
@@ -18,20 +26,8 @@ void UN2COpenAIService::GetConfiguration(
 {
     OutEndpoint = Config.ApiEndpoint;
     OutAuthToken = Config.ApiKey;
-    
-    // Find matching model enum for system prompt support check
-    for (int32 i = 0; i < static_cast<int32>(EN2COpenAIModel::GPT_o1_Mini) + 1; i++)
-    {
-        EN2COpenAIModel Model = static_cast<EN2COpenAIModel>(i);
-        if (FN2CLLMModelUtils::GetOpenAIModelValue(Model) == Config.Model)
-        {
-            OutSupportsSystemPrompts = FN2CLLMModelUtils::SupportsSystemPrompts(Model);
-            return;
-        }
-    }
-    
-    // Default to supporting system prompts if model not found
-    OutSupportsSystemPrompts = true;
+
+    OutSupportsSystemPrompts = SupportsSystemPromptsForModel(Config.Model);
 }
 
 void UN2COpenAIService::GetProviderHeaders(TMap<FString, FString>& OutHeaders) const
@@ -48,17 +44,7 @@ void UN2COpenAIService::GetProviderHeaders(TMap<FString, FString>& OutHeaders) c
 
 FString UN2COpenAIService::FormatRequestPayload(const FString& UserMessage, const FString& SystemMessage) const
 {
-    // Check if model supports system prompts
-    bool bSupportsSystemPrompts = false;
-    for (int32 i = 0; i < static_cast<int32>(EN2COpenAIModel::GPT_o1_Mini) + 1; i++)
-    {
-        EN2COpenAIModel Model = static_cast<EN2COpenAIModel>(i);
-        if (FN2CLLMModelUtils::GetOpenAIModelValue(Model) == Config.Model)
-        {
-            bSupportsSystemPrompts = FN2CLLMModelUtils::SupportsSystemPrompts(Model);
-            break;
-        }
-    }
+    const bool bSupportsSystemPrompts = SupportsSystemPromptsForModel(Config.Model);
 
     // Create and configure payload builder
     UN2CLLMPayloadBuilder* PayloadBuilder = NewObject<UN2CLLMPayloadBuilder>();

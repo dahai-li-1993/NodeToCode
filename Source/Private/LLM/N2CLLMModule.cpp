@@ -43,7 +43,8 @@ bool UN2CLLMModule::Initialize()
     }
 
     // Create config from settings
-    Config.Provider = Settings->Provider;
+    // Provider/model are intentionally fixed to OpenAI + GPT-5.3 Codex.
+    Config.Provider = EN2CLLMProvider::OpenAI;
     Config.ApiKey = Settings->GetActiveApiKey();
     Config.Model = Settings->GetActiveModel();
 

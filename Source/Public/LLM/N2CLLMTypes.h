@@ -46,7 +46,7 @@ struct FN2CLLMConfig
     GENERATED_BODY()
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LLM Integration")
-    EN2CLLMProvider Provider = EN2CLLMProvider::Anthropic;
+    EN2CLLMProvider Provider = EN2CLLMProvider::OpenAI;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LLM Integration")
     FString ApiEndpoint;
